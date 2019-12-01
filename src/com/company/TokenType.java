@@ -14,14 +14,13 @@ public enum TokenType {
     LESS("<"),
     EQUAL("="),
     ID("[a-zA-Z_][a-zA-Z_0-9]*"),
-    ADD("\\+"),
-    SUB("-"),
+   // ADD("\\+"),
+   // SUB("-"),
     MUL("\\*"),
-    DIV("/"),
+   // DIV("/"),
     LPAR("\\("),
     RPAR("\\)"),
     Terminal(";"),
-    ENP("enp"),
     SPACE("[ \t\r\n]+");
 
     final Pattern pattern;

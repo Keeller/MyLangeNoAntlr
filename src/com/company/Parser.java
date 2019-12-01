@@ -1,6 +1,7 @@
 package com.company;
 
 
+import Semantic.Evaler;
 import Semantic.HexNumber;
 import Semantic.Varibales;
 import com.company.ast.*;
@@ -26,8 +27,9 @@ public class Parser {
             throw new RuntimeException(message + " в конце файла");
         }
     }
-    private static void semanticError(String message){
-        throw new RuntimeException("Семантическая ошибка "+message);
+
+    public static void semanticError(String message) {
+        throw new RuntimeException("Семантическая ошибка " + message);
     }
 
     private Token match(TokenType... expected) {
@@ -80,23 +82,36 @@ public class Parser {
         }
     }
 
-    private ExprNode parseCicle(){
+    private ExprNode parseCicle() {
         Token op;
-        ExprNode e1=null;
-        while ((op=match(TokenType.WHILE))==null)
-            e1=parseExpression();
-        ConditionalExprNode e2=(ConditionalExprNode) (parseConditionalExpresstion());
-        e1=new CicleNode(e2,e1);
+        ExprNode e1 = null;
+        while ((op = match(TokenType.WHILE)) == null)
+            e1 = parseExpression();
+        ConditionalExprNode e2=null;
+        try {
+            e2 = (ConditionalExprNode) (parseConditionalExpresstion());
+
+            if(e2.leftArg==null)
+                error("Can not match left arg in cicle expression ");
+            if(e2.op==null)
+                error("Can not match op in cicle expression ");
+            if(e2.rightArg==null)
+                error("Can not match right arg in cicle expression ");
+
+        }catch (ClassCastException|NullPointerException e){
+            error("Excepted conditional");
+        }
+        e1 = new CicleNode(e2, e1);
         return e1;
     }
 
-    private ExprNode parseConditionalExpresstion(){
+    private ExprNode parseConditionalExpresstion() {
         Token op;
-        ExprNode e1=parseMnozh();
+        ExprNode e1 = parseMnozh();
         ExprNode e2;
-        while ((op=match(TokenType.LESS,TokenType.MORE,TokenType.EQUAL))!=null){
-                    e2=parseElem();
-                    e1=new ConditionalExprNode(op,e1,e2);
+        while ((op = match(TokenType.LESS, TokenType.MORE, TokenType.EQUAL)) != null) {
+            e2 = parseElem();
+            e1 = new ConditionalExprNode(op, e1, e2);
         }
 
         return e1;
@@ -107,34 +122,36 @@ public class Parser {
 
         ExprNode e1 = parseMnozh();
         ExprNode e2;
-        String id="";
+        String id = "";
         Token op;
         Token t;
-        while (((op = match(TokenType.INCR, TokenType.DECR,TokenType.Terminal,TokenType.PRINT,TokenType.DO,TokenType.MUL)) != null)) {
+        while (((op = match(TokenType.INCR, TokenType.DECR, TokenType.Terminal, TokenType.PRINT, TokenType.DO, TokenType.MUL)) != null)) {
             switch (op.type) {
                 case Terminal:
                     e1 = new TerminalNode(parseExpression(), e1);
-                break;
+                    break;
                 case MUL:
-                        e1 = new BinOpNode(op, e1, parseElem());
+                    if(!(e1 instanceof VarNode) )
+                        error("Left arg of Multiply must be a varibale");
+                    e1 = new BinOpNode(op, e1, parseElem());
                     break;
                 case INCR:
-                    id=op.text.substring(0,op.text.length()-2);
-                    e1=new PostfixExpressionNode(op,e1,id);
-                break;
+                    id = op.text.substring(0, op.text.length() - 2);
+                    e1 = new PostfixExpressionNode(op, e1, id);
+                    break;
 
                 case DECR:
-                    id=op.text.substring(0,op.text.length()-2);
-                    e1=new PostfixExpressionNode(op,e1,id);
+                    id = op.text.substring(0, op.text.length() - 2);
+                    e1 = new PostfixExpressionNode(op, e1, id);
                     break;
 
                 case PRINT:
-                    id=op.text.substring(6,op.text.length());
-                    e1=new PrintExpressionNode(id);
+                    id = op.text.substring(6, op.text.length());
+                    e1 = new PrintExpressionNode(id);
                     break;
 
                 case DO:
-                    e1=parseCicle();
+                    e1 = parseCicle();
                     break;
             }
         }
@@ -152,206 +169,69 @@ public class Parser {
         if (node instanceof NumberNode) {
             NumberNode num = (NumberNode) node;
             return;
-        }
-         else if (node instanceof TerminalNode){
-            TerminalNode terminal=(TerminalNode)node;
-            if(terminal.next==null) {
-                if(terminal.current!=null)
-                    eval(terminal.current);
-                return;
-            }
-            else{
-                if(terminal.current!=null)
-                    eval(terminal.current);
-                 eval(terminal.next);
-                 return;
-            }
+        } else if (node instanceof TerminalNode) {
+            TerminalNode terminal = (TerminalNode) node;
+            Evaler.EvalTerminalNode(terminal);
+            return;
 
-             // Das ist костыль при допиливании убрать
-        }
-        else if (node instanceof PostfixExpressionNode){
-            PostfixExpressionNode pf=(PostfixExpressionNode)node;
-            if(!Varibales.hasVar(pf.id))
-                semanticError("Varibale "+pf.id+" must be init");
-            Integer i=Varibales.getValue(pf.id);
-            switch (pf.op.type) {
-                case INCR:
-                    Varibales.putVar(pf.id, ++i);
-                    break;
-                case DECR:
-                    Varibales.putVar(pf.id, --i);
-                    break;
-                default:
-                    semanticError("Unknown postfix operation");
-                    break;
-
-            }
+        } else if (node instanceof PostfixExpressionNode) {
+            PostfixExpressionNode pf = (PostfixExpressionNode) node;
+           Evaler.EvalPostfixNode(pf);
             //eval(pf.last);
             return;
-        }
-        else if (node instanceof PrintExpressionNode){
-            PrintExpressionNode pr=(PrintExpressionNode)node;
-            if(!Varibales.hasVar(pr.id))
-                semanticError("Varibale "+pr.id+" must be init");
-            Integer i=Varibales.getValue(pr.id);
-            System.out.println(HexNumber.toHexString(i));
+        } else if (node instanceof PrintExpressionNode) {
+            PrintExpressionNode pr = (PrintExpressionNode) node;
+            Evaler.EvalPrintExpression(pr);
             //eval(pr.prev);
             return;
-        }
-        else if (node instanceof CicleNode){
-            CicleNode cicleNode=(CicleNode)node;
-            Integer rightArg=null;
-            Integer leftArg=null;
-
-            switch (cicleNode.conditional.op.type){
-                case MORE:
-                    do {
-                        if(((CicleNode) node).conditional.rightArg instanceof VarNode) {
-                            if(!Varibales.hasVar((( VarNode)(((CicleNode) node).conditional.rightArg)).id.text))
-                                semanticError("Varibale "+((( VarNode)(((CicleNode) node).conditional.rightArg)).id.text)+" must be init");
-                            rightArg = Varibales.getValue(((VarNode) (((CicleNode) node).conditional.rightArg)).id.text);
-                        }
-                        else if(((CicleNode) node).conditional.rightArg instanceof NumberNode){
-                            rightArg=HexNumber.toDecimal(((NumberNode) ((CicleNode) node).conditional.rightArg).number.text);
-
-                        }
-
-                        if(((CicleNode) node).conditional.leftArg instanceof VarNode) {
-                            if(!Varibales.hasVar((( VarNode)(((CicleNode) node).conditional.leftArg)).id.text))
-                                semanticError("Varibale "+((( VarNode)(((CicleNode) node).conditional.leftArg)).id.text)+" must be init");
-                            leftArg = Varibales.getValue(((VarNode) (((CicleNode) node).conditional.leftArg)).id.text);
-                        }
-                        else if(((CicleNode) node).conditional.leftArg instanceof NumberNode){
-                            leftArg=HexNumber.toDecimal(((NumberNode) ((CicleNode) node).conditional.leftArg).number.text);
-
-                        }
-                        eval(((CicleNode) node).body);
-                    }while (leftArg>rightArg);
-                    break;
-                case LESS:
-                    do {
-                        if(((CicleNode) node).conditional.rightArg instanceof VarNode) {
-                            if(!Varibales.hasVar((( VarNode)(((CicleNode) node).conditional.rightArg)).id.text))
-                                semanticError("Varibale "+((( VarNode)(((CicleNode) node).conditional.rightArg)).id.text)+" must be init");
-                            rightArg = Varibales.getValue(((VarNode) (((CicleNode) node).conditional.rightArg)).id.text);
-                        }
-                        else if(((CicleNode) node).conditional.rightArg instanceof NumberNode){
-                            rightArg=HexNumber.toDecimal(((NumberNode) ((CicleNode) node).conditional.rightArg).number.text);
-
-                        }
-
-                        if(((CicleNode) node).conditional.leftArg instanceof VarNode) {
-                            if(!Varibales.hasVar((( VarNode)(((CicleNode) node).conditional.leftArg)).id.text))
-                                semanticError("Varibale "+((( VarNode)(((CicleNode) node).conditional.leftArg)).id.text)+" must be init");
-                            leftArg = Varibales.getValue(((VarNode) (((CicleNode) node).conditional.leftArg)).id.text);
-                        }
-                        else if(((CicleNode) node).conditional.leftArg instanceof NumberNode){
-                            leftArg=HexNumber.toDecimal(((NumberNode) ((CicleNode) node).conditional.leftArg).number.text);
-
-                        }
-                        eval(((CicleNode) node).body);
-                    }while (leftArg<rightArg);
-                    break;
-                case EQUAL:
-                    do {
-                        if(((CicleNode) node).conditional.rightArg instanceof VarNode) {
-                            if(!Varibales.hasVar((( VarNode)(((CicleNode) node).conditional.rightArg)).id.text))
-                                semanticError("Varibale "+((( VarNode)(((CicleNode) node).conditional.rightArg)).id.text)+" must be init");
-                            rightArg = Varibales.getValue(((VarNode) (((CicleNode) node).conditional.rightArg)).id.text);
-                        }
-                        else if(((CicleNode) node).conditional.rightArg instanceof NumberNode){
-                            rightArg=HexNumber.toDecimal(((NumberNode) ((CicleNode) node).conditional.rightArg).number.text);
-
-                        }
-
-                        if(((CicleNode) node).conditional.leftArg instanceof VarNode) {
-                            if(!Varibales.hasVar((( VarNode)(((CicleNode) node).conditional.leftArg)).id.text))
-                                semanticError("Varibale "+((( VarNode)(((CicleNode) node).conditional.leftArg)).id.text)+" must be init");
-                            leftArg = Varibales.getValue(((VarNode) (((CicleNode) node).conditional.leftArg)).id.text);
-                        }
-                        else if(((CicleNode) node).conditional.leftArg instanceof NumberNode){
-                            leftArg=HexNumber.toDecimal(((NumberNode) ((CicleNode) node).conditional.leftArg).number.text);
-
-                        }
-                        eval(((CicleNode) node).body);
-                    }while (leftArg==rightArg);
-                    break;
-
-                default:
-                    semanticError("Unknown condition operation");
-                    break;
-
-
-
-            }
-
+        } else if (node instanceof CicleNode) {
+            CicleNode cicleNode = (CicleNode) node;
+            Evaler.EvalCicleExpression(cicleNode);
             return;
-        }
-        else if(node instanceof VarNode)
+        } else if (node instanceof VarNode)
             return;
-        else if (node instanceof BinOpNode){
-            BinOpNode binNode=(BinOpNode)node;
-            Integer right=null;
-            Integer left=null;
-            if(binNode.left instanceof VarNode) {
-                if(!Varibales.hasVar(((VarNode) binNode.left).id.text))
-                    semanticError("Varibales must init");
-                left = Varibales.getValue(((VarNode) binNode.left).id.text);
-            }
-            else if(binNode.left instanceof NumberNode)
-                left= HexNumber.toDecimal(((NumberNode) binNode.left).number.text);
-            else
-                semanticError("Unknown argument of multiplicate ");
-
-            if(binNode.right instanceof VarNode) {
-                if(!Varibales.hasVar(((VarNode) binNode.right).id.text))
-                    semanticError("Varibales must init");
-                right = Varibales.getValue(((VarNode) binNode.right).id.text);
-            }
-            else if(binNode.left instanceof NumberNode)
-                right=HexNumber.toDecimal(((NumberNode) binNode.right).number.text);
-            else
-                semanticError("Unknown argument of multiplicate ");
-            Varibales.putVar(((VarNode)binNode.left).id.text,left*right);
+        else if (node instanceof BinOpNode) {
+            BinOpNode binNode = (BinOpNode) node;
+            Evaler.EvalBinOpNode(binNode);
             return;
         }
 
-        throw new IllegalStateException();
+        semanticError("Неизвестный узел "+node.getClass());
     }
 
-    private static void initVar(){
-        String key="";
-        String value="";
-        String nextc="";
+    private static void initVar() {
+        String key = "";
+        String value = "";
+        String nextc = "";
         do {
             System.out.println("Введите next или end");
-            nextc= new Scanner(System.in).nextLine();
-            if(nextc.equals("end"))
+            nextc = new Scanner(System.in).nextLine();
+            if (nextc.equals("end"))
                 break;
             System.out.println("Введите имя переменной");
             key = new Scanner(System.in).nextLine();
             System.out.println("Введите значение переменной");
             value = new Scanner(System.in).nextLine();
 
-            Varibales.putVar(key,HexNumber.toDecimal(value));
-        }while (true);
+            Varibales.putVar(key, HexNumber.toDecimal(value));
+        } while (true);
 
     }
 
     public static void main(String[] args) {
         String text = "x;y;" +
                 "do;" +
-                "print x;"+
-                    "x++;"+
-                "do;"+
-                    "print y;"+
-                    "y--;"+
-                    "while(y>0);"+
-                "while(x<4);";
-        String text1= "res;i;n;" +
+                "print x;" +
+                "x++;" +
                 "do;" +
-                "res*i;"+
-                "i++;"+
+                "print y;" +
+                "y--;" +
+                "while(y>0);" +
+                "while(x<4);";
+        String text1 = "res;i;n;0;" +
+                "do;" +
+                "res*i;" +
+                "i++;" +
                 "while(i<n);" +
                 "print res;";
 
@@ -360,9 +240,9 @@ public class Parser {
         tokens.removeIf(t -> t.type == TokenType.SPACE);
 
         Parser p = new Parser(tokens);
-        ExprNode node = p.parseExpression();
-        initVar();
-        eval(node);
+            ExprNode node = p.parseExpression();
+            initVar();
+            eval(node);
 
     }
 }
