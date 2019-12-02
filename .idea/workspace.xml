@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f051b925-ba75-4d98-9c24-8f726a8737e6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="f051b925-ba75-4d98-9c24-8f726a8737e6" name="Default Changelist" comment="Refactor and error parse added">
+      <change afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/Evaler$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/Evaler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/MyLange.g4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/antlr-4.7.2-complete.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Semantic/Evaler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/company/antlr-4.7.2-complete.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/HexNumber.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/HexNumber.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/Result.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/Result.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/Varibales.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/Semantic/Varibales.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Lexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Lexer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Parser$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Parser$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Parser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Token.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/Token.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/TokenType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/TokenType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/BinOpNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/BinOpNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/CicleNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/CicleNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/ConditionalExprNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/ConditionalExprNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/ENPNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/ENPNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/ExprNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/ExprNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/NumberNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/NumberNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/PostfixExpressionNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/PostfixExpressionNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/PrintExpressionNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/PrintExpressionNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/TerminalNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/TerminalNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/VarNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/MyLangNoAntlr/com/company/ast/VarNode.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/TokenType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/TokenType.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +32,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573422852143" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../KSP-4LAB" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -114,6 +99,14 @@
       <option name="presentableId" value="Default" />
       <updated>1573422647566</updated>
     </task>
+    <task id="LOCAL-00001" summary="Refactor and error parse added">
+      <created>1575234015697</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1575234015697</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -128,6 +121,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Refactor and error parse added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor and error parse added" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

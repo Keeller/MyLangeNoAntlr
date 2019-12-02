@@ -188,8 +188,10 @@ public class Parser {
             CicleNode cicleNode = (CicleNode) node;
             Evaler.EvalCicleExpression(cicleNode);
             return;
-        } else if (node instanceof VarNode)
+        } else if (node instanceof VarNode) {
+            Evaler.evalVarNode((VarNode) node);
             return;
+        }
         else if (node instanceof BinOpNode) {
             BinOpNode binNode = (BinOpNode) node;
             Evaler.EvalBinOpNode(binNode);
@@ -198,7 +200,10 @@ public class Parser {
 
         semanticError("Неизвестный узел "+node.getClass());
     }
-
+    /*
+    метод для ввода перееменных по имени перед выполнением программы.(старый вариант)
+     */
+    @Deprecated
     private static void initVar() {
         String key = "";
         String value = "";
@@ -241,7 +246,7 @@ public class Parser {
 
         Parser p = new Parser(tokens);
             ExprNode node = p.parseExpression();
-            initVar();
+            //initVar();
             eval(node);
 
     }
