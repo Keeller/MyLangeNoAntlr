@@ -224,6 +224,7 @@ public class Parser {
     }
 
     public static void main(String[] args) {
+        //Common programm
         String text = "x;y;" +
                 "do;" +
                 "print x;" +
@@ -233,6 +234,7 @@ public class Parser {
                 "y--;" +
                 "while(y>0);" +
                 "while(x<4);";
+        //Factorial
         String text1 = "res;i;n;0;" +
                 "do;" +
                 "res*i;" +
@@ -240,7 +242,7 @@ public class Parser {
                 "while(i<n);" +
                 "print res;";
 
-        Lexer l = new Lexer(text);
+        Lexer l = new Lexer(text1);
         List<Token> tokens = l.lex();
         tokens.removeIf(t -> t.type == TokenType.SPACE);
 
