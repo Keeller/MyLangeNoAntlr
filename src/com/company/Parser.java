@@ -240,7 +240,7 @@ public class Parser {
                 "while(i<n);" +
                 "print res;";
 
-        Lexer l = new Lexer(text1);
+        Lexer l = new Lexer(text);
         List<Token> tokens = l.lex();
         tokens.removeIf(t -> t.type == TokenType.SPACE);
 

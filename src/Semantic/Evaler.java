@@ -157,7 +157,7 @@ public class Evaler {
     public static void evalVarNode(VarNode node){
         Scanner sc=new Scanner(System.in);
         System.out.println("Please input var "+(node).id.text);
-        Varibales.putVar((node).id.text,sc.nextInt());
+        Varibales.putVar((node).id.text,HexNumber.toDecimal(sc.nextLine()));
         return;
     }
 }
