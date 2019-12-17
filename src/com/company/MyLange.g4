@@ -21,7 +21,7 @@ WhiteSpace
 INCR:Identifier'++';
 DECR:Identifier'--';
 MUL:'*';
-PRINT:'print' Identifier;
+PRINT:'print';
 Terminal:';';
 LeftParen : '(';
 RightParen : ')';
@@ -31,7 +31,7 @@ EQUAL:'=';
 DO:'do';
 WHILE:'while';
 
-MultiplieExpression:Identifier
+MultiplieStatement:Identifier
                     MUL
                     (Identifier|LangDigit);
 
@@ -41,9 +41,9 @@ ConditionalExpression:LeftParen
                        (Identifier|LangDigit)
                        RightParen;
 
-Statement:Identifier|LangDigit|Terminal|PRINT|CicleExpression|MultiplieExpression;
+Statement:Identifier Terminal|PRINT Identifier Terminal|CicleStatement Terminal|MultiplieStatement Terminal;
 
-CicleExpression:DO   Terminal
+CicleStatement:DO   Terminal
                        Statement+
                         WHILE
                          ConditionalExpression;

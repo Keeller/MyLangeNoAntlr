@@ -87,18 +87,18 @@ public class Parser {
         ExprNode e1 = null;
         while ((op = match(TokenType.WHILE)) == null)
             e1 = parseExpression();
-        ConditionalExprNode e2=null;
+        ConditionalExprNode e2 = null;
         try {
             e2 = (ConditionalExprNode) (parseConditionalExpresstion());
 
-            if(e2.leftArg==null)
+            if (e2.leftArg == null)
                 error("Can not match left arg in cicle expression ");
-            if(e2.op==null)
+            if (e2.op == null)
                 error("Can not match op in cicle expression ");
-            if(e2.rightArg==null)
+            if (e2.rightArg == null)
                 error("Can not match right arg in cicle expression ");
 
-        }catch (ClassCastException|NullPointerException e){
+        } catch (ClassCastException | NullPointerException e) {
             error("Excepted conditional");
         }
         e1 = new CicleNode(e2, e1);
@@ -117,41 +117,77 @@ public class Parser {
         return e1;
     }
 
+    public ExprNode parseDecrExpression(ExprNode ex){
+        if(tokens.get(pos-2).type==TokenType.ID){
+            return new PostfixExpressionNode(tokens.get(pos-1),ex,tokens.get(pos-2).text);
+        }
+        error("Excepted id on decr op");
+        return null;
+    }
+
+    public ExprNode parsePrintExpression(){
+        Token op;
+        if((op=match(TokenType.ID))!=null){
+            return new PrintExpressionNode(op.text);
+        }
+        error("Excepted ID");
+        return null;
+    }
+
+    public ExprNode parseIncrExpression(ExprNode ex){
+        if(tokens.get(pos-2).type==TokenType.ID){
+            return new PostfixExpressionNode(tokens.get(pos-1),ex,tokens.get(pos-2).text);
+        }
+        error("Excepted id on incr op");
+        return null;
+    }
+
+    public ExprNode parseMultiplyExpression(ExprNode e1){
+        if (this.tokens.get(pos-2).type==TokenType.ID)
+            return new BinOpNode(tokens.get(pos),e1,parseElem());
+        error("Left arg of Multiply must be a varibale");
+        return null;
+    }
 
     public ExprNode parseExpression() {
 
-        ExprNode e1 = parseMnozh();
+        //ExprNode e1 = parseMnozh();
+        ExprNode e1=null;
         ExprNode e2;
         String id = "";
         Token op;
         Token t;
-        while (((op = match(TokenType.INCR, TokenType.DECR, TokenType.Terminal, TokenType.PRINT, TokenType.DO, TokenType.MUL)) != null)) {
+        while (((op = match(TokenType.INCR, TokenType.DECR, TokenType.Terminal, TokenType.PRINT, TokenType.DO, TokenType.MUL,TokenType.ID,TokenType.NUMBER)) != null)) {
             switch (op.type) {
                 case Terminal:
                     e1 = new TerminalNode(parseExpression(), e1);
                     break;
                 case MUL:
-                    if(!(e1 instanceof VarNode) )
-                        error("Left arg of Multiply must be a varibale");
-                    e1 = new BinOpNode(op, e1, parseElem());
+                    e1 = parseMultiplyExpression(e1);
                     break;
                 case INCR:
-                    id = op.text.substring(0, op.text.length() - 2);
-                    e1 = new PostfixExpressionNode(op, e1, id);
+                    //id = op.text.substring(0, op.text.length() - 2);
+                    e1 = parseIncrExpression(e1);
                     break;
 
                 case DECR:
-                    id = op.text.substring(0, op.text.length() - 2);
-                    e1 = new PostfixExpressionNode(op, e1, id);
+                    e1 = parseDecrExpression(e1);
                     break;
 
                 case PRINT:
-                    id = op.text.substring(6, op.text.length());
-                    e1 = new PrintExpressionNode(id);
+                    //id = op.text.substring(6, op.text.length());
+                    e1 = parsePrintExpression();
                     break;
 
                 case DO:
                     e1 = parseCicle();
+                    break;
+
+                case ID:
+                    e1=new VarNode(op);
+                    break;
+                case NUMBER:
+                    e1=new NumberNode(op);
                     break;
             }
         }
@@ -176,7 +212,7 @@ public class Parser {
 
         } else if (node instanceof PostfixExpressionNode) {
             PostfixExpressionNode pf = (PostfixExpressionNode) node;
-           Evaler.EvalPostfixNode(pf);
+            Evaler.EvalPostfixNode(pf);
             //eval(pf.last);
             return;
         } else if (node instanceof PrintExpressionNode) {
@@ -191,15 +227,15 @@ public class Parser {
         } else if (node instanceof VarNode) {
             Evaler.evalVarNode((VarNode) node);
             return;
-        }
-        else if (node instanceof BinOpNode) {
+        } else if (node instanceof BinOpNode) {
             BinOpNode binNode = (BinOpNode) node;
             Evaler.EvalBinOpNode(binNode);
             return;
         }
 
-        semanticError("Неизвестный узел "+node.getClass());
+        semanticError("Неизвестный узел " + node.getClass());
     }
+
     /*
     метод для ввода перееменных по имени перед выполнением программы.(старый вариант)
      */
@@ -225,8 +261,9 @@ public class Parser {
 
     public static void main(String[] args) {
         //Common programm
-        String text = "x;y;" +
+        String text =
                 "do;" +
+                        "x;y;"+
                 "print x;" +
                 "x++;" +
                 "do;" +
@@ -247,9 +284,9 @@ public class Parser {
         tokens.removeIf(t -> t.type == TokenType.SPACE);
 
         Parser p = new Parser(tokens);
-            ExprNode node = p.parseExpression();
-            //initVar();
-            eval(node);
+        ExprNode node = p.parseExpression();
+        //initVar();
+        eval(node);
 
     }
 }
